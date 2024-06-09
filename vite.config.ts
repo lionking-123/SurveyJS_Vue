@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import path from 'path';
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -24,6 +25,7 @@ export default defineConfig(({ command }) => {
     resolve: {
       preserveSymlinks: command == "serve" ? false : true,
       alias: {
+        firebase: path.resolve(__dirname, 'node_modules/firebase'),
         '@': fileURLToPath(new URL('./src', import.meta.url)),
         "survey-core": fileURLToPath(new URL('./node_modules/survey-core', import.meta.url)),
         "survey-creator-core": fileURLToPath(new URL('./node_modules/survey-creator-core', import.meta.url)),

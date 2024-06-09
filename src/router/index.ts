@@ -7,6 +7,8 @@ import PDFGenerator from "../components/PDFGenerator.vue"
 import Dashboard from "../components/Dashboard.vue"
 import DashboardTabulator from "../components/DashboardTabulator.vue"
 import DashboardDatatables from "../components/DashboardDatatables.vue"
+import LoginPage from "../components/LoginPage.vue"
+import RegisterPage from "../components/RegisterPage.vue"
 
 
 const router = createRouter({
@@ -19,6 +21,8 @@ const router = createRouter({
     { path: "/analytics", component: Dashboard },
     { path: "/analyticstabulator", component: DashboardTabulator },
     { path: "/analyticsdatatables", component: DashboardDatatables },
+    { path: "/login", component: LoginPage },
+    { path: "/register", component: RegisterPage },
   ]
 })
 
