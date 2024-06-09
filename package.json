@@ -25,6 +25,7 @@
     "surveyjs-widgets": "latest",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
+    "vuetify": "^3.6.8",
     "xlsx": "^0.16.9"
   },
   "devDependencies": {

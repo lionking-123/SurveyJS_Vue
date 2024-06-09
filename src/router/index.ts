@@ -7,8 +7,8 @@ import PDFGenerator from "../components/PDFGenerator.vue"
 import Dashboard from "../components/Dashboard.vue"
 import DashboardTabulator from "../components/DashboardTabulator.vue"
 import DashboardDatatables from "../components/DashboardDatatables.vue"
-import LoginPage from "../components/LoginPage.vue"
-import RegisterPage from "../components/RegisterPage.vue"
+import LoginPage from "../pages/LoginPage.vue"
+import RegisterPage from "../pages/RegisterPage.vue"
 
 
 const router = createRouter({
