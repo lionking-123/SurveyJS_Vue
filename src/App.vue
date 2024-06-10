@@ -3,7 +3,7 @@ import RouterPage from "./router/RoutePage.vue";
 import "bootstrap/dist/css/bootstrap.css";
 import Header from './components/Header.vue'
 import AdminHeader from './components/AdminHeader.vue'
-const isAdmin = true;
+const isAdmin = false;
 </script>
 <template>
   <div id="app">

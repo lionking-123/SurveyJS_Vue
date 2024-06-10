@@ -20,6 +20,18 @@
             <v-btn class="mb-8" color="blue" size="large" variant="tonal" block @click="register">
                 Sign up
             </v-btn>
+            <v-btn class="mb-8" color="" size="large" variant="tonal" block @click="_registerWithGithub">
+                <v-icon class="me-2" size="large">
+                    mdi-github
+                </v-icon>
+                Signup with Github
+            </v-btn>
+            <v-btn class="mb-8" color="" size="large" variant="tonal" block @click="_registerWithGoogle">
+                <v-icon class="me-2" size="large">
+                    mdi-google
+                </v-icon>
+                Signup with google
+            </v-btn>
             <v-card-text class="text-center">
                 <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" @click="login">
                     Login now <v-icon icon="mdi-chevron-right"></v-icon>
@@ -31,6 +43,7 @@
 <script setup>
 import { ref } from 'vue'
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import {  createUser,registerWithGithub,registerWithGoogle } from '@/models/users'
 import { auth } from '@/firebase';
 import { useRouter } from 'vue-router' // import router
 const router = useRouter() // get a reference to our vue router
@@ -41,8 +54,11 @@ const errMsg = ref() // ERROR MESSAGE
 
 const register = async () => {
     await createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then(() => {
-            router.push('/login');
+        .then(({ user }) => {
+            createUser(user)
+            console.log(user, '44444444444');
+
+            // router.push('/login');
         })
         .catch(error => {
             switch (error.code) {
@@ -58,7 +74,14 @@ const register = async () => {
             }
         })
 }
-const login = ()=>{
+const login = () => {
     router.push("/login")
 }
+const _registerWithGithub = async()=>{
+    await registerWithGithub();
+}
+const _registerWithGoogle = async()=>{
+    await registerWithGoogle();
+}
+
 </script>

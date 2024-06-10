@@ -3,8 +3,8 @@
         <v-img class="mx-auto my-6" max-width="228" src="../../assets/login.png"></v-img>
         <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
             <div class="text-subtitle-1 text-medium-emphasis">Account</div>
-            <v-text-field v-model="email" density="compact" placeholder="Email address"
-            :rules="[required]" clearable prepend-inner-icon="mdi-email-outline" variant="outlined"></v-text-field>
+            <v-text-field v-model="email" density="compact" placeholder="Email address" :rules="[required]" clearable
+                prepend-inner-icon="mdi-email-outline" variant="outlined"></v-text-field>
             <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                 Password
             </div>
@@ -17,8 +17,20 @@
                     <p>{{ errMsg }}</p>
                 </v-card-text>
             </v-card>
-            <v-btn class="mb-8" color="blue" size="large" variant="tonal" block @click="signIn">
+            <v-btn class="mb-4" color="blue" size="large" variant="tonal" block @click="signIn">
                 Log In
+            </v-btn>
+            <v-btn class="mb-4" color="" size="large" variant="tonal" block @click="_loginWithGithub">
+                <v-icon class="me-2" size="large">
+                    mdi-github
+                </v-icon>
+                login with Github
+            </v-btn>
+            <v-btn class="mb-4" color="" size="large" variant="tonal" block @click="_loginWithGoogle">
+                <v-icon class="me-2" size="large">
+                    mdi-google
+                </v-icon>
+                login with google
             </v-btn>
             <v-card-text class="text-center">
                 <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" @click="register">
@@ -32,6 +44,7 @@
 import { ref } from 'vue'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/firebase';
+import {  loginWithGoogle, loginWithGithub } from "@/models/users";
 import { useRouter } from 'vue-router' // import router
 const email = ref('')
 const password = ref('')
@@ -64,6 +77,10 @@ const signIn = () => { // we also renamed this method
 const register = () => {
     router.push('/register')
 }
-
-
+const _loginWithGithub = async () => {
+    await loginWithGithub();
+}
+const _loginWithGoogle = async () => {
+    await loginWithGoogle();
+}
 </script>

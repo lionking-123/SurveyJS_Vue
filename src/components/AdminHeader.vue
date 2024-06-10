@@ -10,7 +10,7 @@
             <router-link to="/">Home</router-link>
           </li>
           <li>
-            <router-link to="/admin">User Manager</router-link>
+            <router-link to="/admin/users">User Manager</router-link>
           </li>
         </ul>
       </div>

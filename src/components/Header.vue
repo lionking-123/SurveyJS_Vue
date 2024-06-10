@@ -27,6 +27,9 @@
           <li v-if="!isLoggedIn">
             <router-link to="/register">Register</router-link>
           </li>
+          <li>
+            <router-link to="/admin/users">User Manager</router-link>
+          </li>
         </ul>
       </div>
     </nav>

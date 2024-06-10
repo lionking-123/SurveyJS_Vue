@@ -9,6 +9,7 @@ import DashboardTabulator from "../components/DashboardTabulator.vue"
 import DashboardDatatables from "../components/DashboardDatatables.vue"
 import LoginPage from "../pages/LoginPage.vue"
 import RegisterPage from "../pages/RegisterPage.vue"
+import UserManager from "../pages/admin/Users.vue"
 
 
 const router = createRouter({
@@ -23,6 +24,7 @@ const router = createRouter({
     { path: "/analyticsdatatables", component: DashboardDatatables },
     { path: "/login", component: LoginPage },
     { path: "/register", component: RegisterPage },
+    { path: "/admin/users", component: UserManager },
   ]
 })
 
