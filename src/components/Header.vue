@@ -3,20 +3,14 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/">SurveyJS + Vue 3</a>
+          <img src='/assets/logo.svg' class="" alt="logo" height="50px">
         </div>
         <ul class="nav navbar-nav">
           <li>
-            <router-link to="/">Home</router-link>
+            <router-link to="/" class="white">My Surveys</router-link>
           </li>
           <li>
-            <router-link to="/creator">Survey Creator</router-link>
-          </li>
-          <li>
-            <router-link to="/analytics">Dashboard</router-link>
-          </li>
-          <li>
-            <router-link to="/analyticstabulator">Results Table</router-link>
+            <router-link to="/about">About</router-link>
           </li>
           <li v-if="isLoggedIn">
             <router-link to="#" @click="_signOut">Logout</router-link>
@@ -27,9 +21,9 @@
           <li v-if="!isLoggedIn">
             <router-link to="/register">Register</router-link>
           </li>
-          <li>
+          <!-- <li>
             <router-link to="/admin/users">User Manager</router-link>
-          </li>
+          </li> -->
         </ul>
       </div>
     </nav>
@@ -60,6 +54,13 @@
   <style scoped>
   .navbar {
     margin-bottom: 20px;
+  }
+  .container-fluid{
+    background-color: #19b394;
+  }
+  .navbar-nav li a{
+    color: white;
+    font-size: 22px;
   }
   </style>
   
