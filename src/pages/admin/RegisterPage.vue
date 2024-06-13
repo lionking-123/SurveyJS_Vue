@@ -43,7 +43,7 @@
 <script setup>
 import { ref } from 'vue'
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import {  createUser,registerWithGithub,registerWithGoogle } from '@/models/users'
+import {  createUser,registerWithGithub,registerWithGoogle } from '@/models/company_users'
 import { auth } from '@/firebase';
 import { useRouter } from 'vue-router' // import router
 const router = useRouter() // get a reference to our vue router
@@ -54,8 +54,12 @@ const errMsg = ref() // ERROR MESSAGE
 
 const register = async () => {
     await createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then(({ user }) => {
-            createUser(user,`USER`)
+        .then(async({ user }) => {
+            const result = await createUser(user,`COMPANY_USER`);
+            errMsg.value = result;
+            if(result === true){
+                router.push('/my_survey');
+            }
             // router.push('/login');
         })
         .catch(error => {
@@ -73,20 +77,20 @@ const register = async () => {
         })
 }
 const login = () => {
-    router.push("/login")
+    router.push("/admin/login")
 }
 const _registerWithGithub = async()=>{
     const result = await registerWithGithub();
-    errMsg.value = result;
+    errMsg.value  = result;
     if(result === true){
-        router.push('survey');
+        router.push('/my_survey');
     }
 }
 const _registerWithGoogle = async()=>{
-    const result  = await registerWithGoogle();
-    errMsg.value = result;
+    const result = await registerWithGoogle();
+    errMsg.value  = result;
     if(result === true){
-        router.push('survey');
+        router.push('/my_survey');
     }
 }
 

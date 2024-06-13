@@ -2,7 +2,7 @@ import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase";
 import { signOut, getAuth, signInWithPopup, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 export async function getUsers() {
-    const users = await getDocs(collection(db, 'users'));
+    const users = await getDocs(collection(db, 'company_users'));
     const documents = users.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -10,9 +10,9 @@ export async function getUsers() {
     return documents
 }
 export async function createUser(user: any, role: String) {
-    const userExists = await existUser(user, `users`)
-    if (await existUser(user, `company_users`)) {
-        return 'This is company account, you can not access with this user.'
+    const userExists = await existUser(user, `company_users`)
+    if (await existUser(user, `users`)) {
+        return 'This is user account, you can not access with this user.'
     }
     if (!userExists) {
         const newObj = {
@@ -23,7 +23,7 @@ export async function createUser(user: any, role: String) {
             photo: user.photoURL,
             role
         };
-        await addDoc(collection(db, 'users'), newObj);
+        await addDoc(collection(db, 'company_users'), newObj);
         return true;
     }
 }
@@ -33,16 +33,17 @@ export async function registerWithGithub() {
     const result = signInWithPopup(auth, provider)
         .then(async result => {
             const user = result.user;
-            if (await existUser(user, `company_users`)) {
+            if (await existUser(user, `users`)) {
                 signOut(auth)
-                return 'This is company account, you can not access with this user.'
+                return 'This is user account, you can not access with this user.'
             }
-            createUser(user, `USER`)
+            createUser(user, `COMPANY_USER`);
+            return true;
         })
         .catch(() => {
             console.log('error with git auth')
         });
-    return result;
+        return result;
 }
 
 export async function registerWithGoogle() {
@@ -54,11 +55,11 @@ export async function registerWithGoogle() {
 
             // This gives you a Google Access Token. You can use it to access the Google API.
             const user = result.user;
-            if (await existUser(user, `company_users`)) {
+            if (await existUser(user, `users`)) {
                 signOut(auth)
-                return 'This is company account, you can not access with this user.'
+                return 'This is user account, you can not access with this user.'
             }
-            createUser(user, `USER`);
+            createUser(user, `COMPANY_USER`);
             return true;
             // IdP data available using getAdditionalUserInfo(result)
             // ...
@@ -66,7 +67,7 @@ export async function registerWithGoogle() {
             console.log('error---');
 
         });
-    return result;
+        return result;
 }
 
 export async function loginWithGithub() {
@@ -75,17 +76,17 @@ export async function loginWithGithub() {
     const result = await signInWithPopup(auth, provider)
         .then(async result => {
             const user = result.user;
-            if (await existUser(user, `company_users`)) {
+            if (await existUser(user, `users`)) {
                 signOut(auth)
-                return 'This is company account, you can not access with this user.'
+                return 'This is user account, you can not access with this user.'
             }
-            createUser(user, `USER`);
+            createUser(user, `COMPANY_USER`);
             return true;
         })
         .catch(() => {
             console.log('error with git auth')
         })
-    return result;
+        return result;
 }
 export async function loginWithGoogle() {
     const auth = getAuth();
@@ -94,12 +95,12 @@ export async function loginWithGoogle() {
     const result = await signInWithPopup(auth, provider)
         .then(async (result) => {
             const user = result.user;
-            if (await existUser(user, `company_users`)) {
+            if (await existUser(user, `users`)) {
                 signOut(auth);
-                return 'This is company account, you can not access with this user.'
+                return 'This is user account, you can not access with this user.'
             }
 
-            createUser(user, `USER`)
+            createUser(user, `COMPANY_USER`)
             return true
         }).catch(() => {
             return false;
@@ -116,12 +117,12 @@ async function existUser(user, collection_name) {
         id: doc.id,
         ...doc.data()
     }));
-    if (documents.length) {
+    if(documents.length){
         return true
-    } else {
+    }else{
         return false;
     }
-
+    
     // return userExists;
 }
 export async function _existUser(email, collection_name) {
@@ -132,31 +133,9 @@ export async function _existUser(email, collection_name) {
         id: doc.id,
         ...doc.data()
     }));
-    console.log(documents.length ? true : false, 'documents');
-
-    if (documents.length > 0) {
+    if(documents.length){
         return true
-    } else {
+    }else{
         return false;
     }
-}
-export async function getCurrentUser(email) {
-    const companyUsersCollection = collection(db, 'company_users');
-    const q = query(companyUsersCollection, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-    const documents = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-
-    const UsersCollection = collection(db, 'users');
-    const u_q = query(UsersCollection, where('email', '==', email));
-    const u_querySnapshot = await getDocs(u_q);
-    const u_documents = u_querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-    console.log(documents.length > 0 ? documents[0] : u_documents[0], 'documents.length > 0 ? documents[0] : u_documents[0];');
-    return documents.length > 0 ? `company` : `user`;
-
 }

@@ -3,8 +3,14 @@ import { SurveyCreatorModel } from 'survey-creator-core';
 import { getSurvey, updateSurvey } from "../models/survey";
 import { useRoute } from 'vue-router';
 import { onMounted } from 'vue';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from "@/firebase";
 const router = useRoute()
 const { id: surveyId } = router.params;
+let currentUser =null;
+onAuthStateChanged(auth, (user) => {
+    currentUser = user
+})
 const creator = new SurveyCreatorModel({
     showLogicTab: true,
     showThemeTab: true,
@@ -12,11 +18,12 @@ const creator = new SurveyCreatorModel({
 });
 creator.isAutoSave = true;
 creator.saveSurveyFunc = async (saveNo, callback) => {
-    await updateSurvey(`${surveyId}`, creator.JSON);
+    await updateSurvey(`${surveyId}`, creator.JSON,currentUser.email);
     callback(saveNo, true)
 }
+
 onMounted(async () => {
-    const surveryData : { json: any } = await getSurvey(`${surveyId}`);
+    const surveryData: { json: any } = await getSurvey(`${surveyId}`);
     creator.JSON = surveryData.json
 })
 

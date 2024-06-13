@@ -44,7 +44,7 @@
 import { ref } from 'vue'
 import { signInWithEmailAndPassword,signOut } from 'firebase/auth'
 import { auth } from '@/firebase';
-import {  loginWithGoogle, loginWithGithub,_existUser } from "@/models/users";
+import {  loginWithGoogle, loginWithGithub,_existUser } from "@/models/company_users";
 import { useRouter } from 'vue-router' // import router
 const email = ref('')
 const password = ref('')
@@ -54,17 +54,15 @@ const signIn = () => { // we also renamed this method
     console.log(email.value, password.value);
     signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
         .then(async() => {
-            if(await _existUser(email.value,'company_users')){
+            if(await _existUser(email.value,'users')){
                 signOut(auth);
-                console.log(111111111111);
-                errMsg.value = "This is company account, you can not access with this user."
+                errMsg.value = "This is user account, you can not access with this user."
             }else{
                 console.log('Successfully logged in!');
-                router.push('/survey') // redirect to the feed
+                router.push('/my_survey') // redirect to the feed
             }
         })
         .catch(error => {
-            console.log(error);
             switch (error.code) {
                 case 'auth/invalid-email':
                     errMsg.value = 'Invalid email'
@@ -82,20 +80,20 @@ const signIn = () => { // we also renamed this method
         });
 }
 const register = () => {
-    router.push('/register')
+    router.push('/admin/register')
 }
 const _loginWithGithub = async () => {
     const result = await loginWithGithub();
-    errMsg.value = result;
+    errMsg.value  = result;
     if(result === true){
-        router.push('survey');
+        router.push('/my_survey');
     }
 }
 const _loginWithGoogle = async () => {
     const result = await loginWithGoogle();
-    errMsg.value = result;
+    errMsg.value  = result;
     if(result === true){
-        router.push('survey');
+        router.push('/my_survey');
     }
 }
 </script>

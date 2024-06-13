@@ -6,8 +6,11 @@
           <img src='/assets/logo.svg' class="" alt="logo" height="50px">
         </div>
         <ul class="nav navbar-nav">
-          <li>
-            <router-link to="/" class="white">My Surveys</router-link>
+          <li v-if="isLoggedIn && role == 'user'">
+            <router-link to="/survey" class="white">Surveys</router-link>
+          </li>
+          <li v-if="isLoggedIn && role == 'company'">
+            <router-link to="/my_survey" class="white">My Survey</router-link>
           </li>
           <li>
             <router-link to="/about">About</router-link>
@@ -34,12 +37,16 @@
   import { onAuthStateChanged, signOut } from 'firebase/auth'
   import { auth } from '@/firebase'
   import { useRouter } from 'vue-router'
-  
+  import { getCurrentUser } from '@/models/users';
+
   const router = useRouter()
   const isLoggedIn = ref(false)
-  
-  onAuthStateChanged(auth, (user) => {
-    isLoggedIn.value = !!user
+  var role = 'false';
+  onAuthStateChanged(auth, async(user) => {
+    if(user){
+      role = await getCurrentUser(user.email);
+    }
+    isLoggedIn.value = !!user;    
   })
   
   const _signOut = () => {

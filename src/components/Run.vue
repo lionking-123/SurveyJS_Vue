@@ -7,13 +7,17 @@
 import { Model, StylesManager } from 'survey-core'
 import { getSurvey, postResult } from '../models/survey';
 import 'survey-core/defaultV2.css';
+import { auth } from "@/firebase";
+import { getCurrentUser } from '@/models/users';
 
 StylesManager.applyTheme("defaultV2");
 
 export default {
     data: () => ({
         surveyData: {},
-        survey: null
+        survey: null,
+        user: {},
+        role:'user'
     }),
     created() {
         this.initialize();
@@ -24,14 +28,26 @@ export default {
             const data = await getSurvey(`${surveyId}`);
             this.surveyData = data;
             this.survey = new Model(data.json);
+            try {
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        this.role = await getCurrentUser(user.email);
+                        this.user = { ...user };
+                    } else {
+                        this.user = {  };
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching user:', error);
+            }
             this.survey.onComplete.add(async (sender) => {
                 const json = {
-                    postid:surveyId,
+                    postid: surveyId,
                     surveyResult: sender.data,
                     surveyResultText: JSON.stringify(sender.data),
                     timestamp: new Date()
                 }
-                await postResult(surveyId, json)
+                if(this.role ===  'user')await postResult(surveyId, json,this.user.email)
             })
         }
     },
