@@ -7,9 +7,13 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from "@/firebase";
 const router = useRoute()
 const { id: surveyId } = router.params;
-let currentUser =null;
+let currentUser:any ={
+    email:String
+};
 onAuthStateChanged(auth, (user) => {
-    currentUser = user
+    if(user){
+        currentUser = {...user}
+    }
 })
 const creator = new SurveyCreatorModel({
     showLogicTab: true,
@@ -18,7 +22,7 @@ const creator = new SurveyCreatorModel({
 });
 creator.isAutoSave = true;
 creator.saveSurveyFunc = async (saveNo, callback) => {
-    await updateSurvey(`${surveyId}`, creator.JSON,currentUser.email);
+    await updateSurvey(`${surveyId}`, creator.JSON,currentUser?.email);
     callback(saveNo, true)
 }
 
