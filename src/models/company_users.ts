@@ -34,10 +34,10 @@ export async function registerWithGithub() {
         .then(async result => {
             const user = result.user;
             if (await existUser(user, `users`)) {
-                signOut(auth)
+                await signOut(auth)
                 return 'This is user account, you can not access with this user.'
             }
-            createUser(user, `COMPANY_USER`);
+            await createUser(user, `COMPANY_USER`);
             return true;
         })
         .catch(() => {
@@ -56,10 +56,10 @@ export async function registerWithGoogle() {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const user = result.user;
             if (await existUser(user, `users`)) {
-                signOut(auth)
+                await signOut(auth)
                 return 'This is user account, you can not access with this user.'
             }
-            createUser(user, `COMPANY_USER`);
+            await createUser(user, `COMPANY_USER`);
             return true;
             // IdP data available using getAdditionalUserInfo(result)
             // ...
@@ -77,10 +77,10 @@ export async function loginWithGithub() {
         .then(async result => {
             const user = result.user;
             if (await existUser(user, `users`)) {
-                signOut(auth)
+                await signOut(auth)
                 return 'This is user account, you can not access with this user.'
             }
-            createUser(user, `COMPANY_USER`);
+            await createUser(user, `COMPANY_USER`);
             return true;
         })
         .catch(() => {
@@ -96,11 +96,11 @@ export async function loginWithGoogle() {
         .then(async (result) => {
             const user = result.user;
             if (await existUser(user, `users`)) {
-                signOut(auth);
+                await signOut(auth);
                 return 'This is user account, you can not access with this user.'
             }
 
-            createUser(user, `COMPANY_USER`)
+            await createUser(user, `COMPANY_USER`)
             return true
         }).catch(() => {
             return false;
@@ -138,4 +138,13 @@ export async function _existUser(email, collection_name) {
     }else{
         return false;
     }
+}
+export async function getCompanyInfo(email) {
+    const usersCollection = collection(db, 'company_users');
+    const q = query(usersCollection, where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    const documents = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+    }));
+    return documents[0];
 }

@@ -32,11 +32,11 @@
                 </v-icon>
                 login with google
             </v-btn>
-            <v-card-text class="text-center">
+            <!-- <v-card-text class="text-center">
                 <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" @click="register">
                     Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
                 </a>
-            </v-card-text>
+            </v-card-text> -->
         </v-card>
     </div>
 </template>
@@ -55,7 +55,7 @@ const signIn = () => { // we also renamed this method
     signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
         .then(async() => {
             if(await _existUser(email.value,'users')){
-                signOut(auth);
+                await signOut(auth);
                 errMsg.value = "This is user account, you can not access with this user."
             }else{
                 console.log('Successfully logged in!');
@@ -80,7 +80,7 @@ const signIn = () => { // we also renamed this method
         });
 }
 const register = () => {
-    router.push('/admin/register')
+    router.push('register')
 }
 const _loginWithGithub = async () => {
     const result = await loginWithGithub();

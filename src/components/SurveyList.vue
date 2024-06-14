@@ -45,7 +45,7 @@
     </v-container>
 </template>
 <script>
-import { getSurveyLists, createSurvey, removeSurvey } from '@/models/survey';
+import { getSurveyLists,getCompanyInfo,getCompanySurvey } from '@/models/survey';
 import { auth } from "@/firebase";
 import { getCurrentUser } from '@/models/users';
 
@@ -61,7 +61,9 @@ export default {
     methods: {
         initialize() {
             (async () => {
-                const surveyLists = await getSurveyLists();
+                const companyId = this.$route.params.id
+                const companyInfo = await getCompanyInfo(companyId);
+                const surveyLists = await getCompanySurvey(companyInfo.email)
                 this.surveyList = surveyLists;
                 try {
                     auth.onAuthStateChanged(async(user) => {
@@ -78,31 +80,9 @@ export default {
 
             })();
         },
-        async addSurvey() {
-            const newObj = {
-                name: `New Survey ${[...this.surveyList].length + 1} `,
-                companyId:this.user.email,
-                json: "{}"
-            };
-            const updatedLists = [...this.surveyList, newObj];
-            this.surveyList = [...updatedLists];
-            await createSurvey({ ...newObj });
-        },
-        async _removeSurvey(uid) {
-            const currentList = [...this.surveyList];
-            const removedList = currentList.filter(list => list.id !== uid);
-            this.surveyList = [...removedList];
-            await removeSurvey(uid);
-        },
-        editSurvey(uid) {
-            this.$router.push(`/edit/${uid}`);
-        },
         runSurvey(uid) {
             this.$router.push(`/run/${uid}`);
         },
-        resultSurvey(uid) {
-            this.$router.push(`/result/${uid}`);
-        }
     }
 }
 </script>

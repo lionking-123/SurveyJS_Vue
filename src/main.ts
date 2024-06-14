@@ -13,6 +13,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import './index.css'
 import store from './store';
+import Clipboard from 'v-clipboard'
 
 const vuetify = createVuetify({
   components,
@@ -22,6 +23,7 @@ store.dispatch('fetchUser'); // Fetch the user on app initialization
 
 const app = createApp(App)
 app.use(store);
+app.use(Clipboard);
 app.use(surveyPlugin)
 app.use(surveyCreatorPlugin).use(router);
 app.use(vuetify);

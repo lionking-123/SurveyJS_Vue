@@ -8,6 +8,11 @@ export async function getSurveyLists() {
     }));
     return documents
 }
+export async function getCompanyInfo(id) {
+    const companyDoc = await getDoc(doc(db, 'company_users', id));
+    return (companyDoc.exists()) ? { id: companyDoc.id, ...companyDoc.data() } : null;
+
+}
 export async function getCompanySurvey(companyId:String) {
     const Collection = collection(db, 'surveys');
     const q = query(Collection, where('companyId', '==', companyId));

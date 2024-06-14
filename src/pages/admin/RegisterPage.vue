@@ -17,26 +17,26 @@
                     <p>{{ errMsg }}</p>
                 </v-card-text>
             </v-card>
-            <v-btn class="mb-8" color="blue" size="large" variant="tonal" block @click="register">
+            <v-btn class="mb-4" color="blue" size="large" variant="tonal" block @click="register">
                 Sign up
             </v-btn>
-            <v-btn class="mb-8" color="" size="large" variant="tonal" block @click="_registerWithGithub">
+            <v-btn class="mb-4" color="" size="large" variant="tonal" block @click="_registerWithGithub">
                 <v-icon class="me-2" size="large">
                     mdi-github
                 </v-icon>
                 Signup with Github
             </v-btn>
-            <v-btn class="mb-8" color="" size="large" variant="tonal" block @click="_registerWithGoogle">
+            <v-btn class="mb-4" color="" size="large" variant="tonal" block @click="_registerWithGoogle">
                 <v-icon class="me-2" size="large">
                     mdi-google
                 </v-icon>
                 Signup with google
             </v-btn>
-            <v-card-text class="text-center">
+            <!-- <v-card-text class="text-center">
                 <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" @click="login">
                     Login now <v-icon icon="mdi-chevron-right"></v-icon>
                 </a>
-            </v-card-text>
+            </v-card-text> -->
         </v-card>
     </div>
 </template>
@@ -77,7 +77,7 @@ const register = async () => {
         })
 }
 const login = () => {
-    router.push("/admin/login")
+    router.push("login")
 }
 const _registerWithGithub = async()=>{
     const result = await registerWithGithub();

@@ -32,69 +32,80 @@
                 </v-icon>
                 login with google
             </v-btn>
-            <v-card-text class="text-center">
+            <!-- <v-card-text class="text-center">
                 <a class="text-blue text-decoration-none" href="#" rel="noopener noreferrer" @click="register">
                     Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
                 </a>
-            </v-card-text>
+            </v-card-text> -->
         </v-card>
     </div>
 </template>
 <script setup method>
-import { ref } from 'vue'
-import { signInWithEmailAndPassword,signOut } from 'firebase/auth'
+import { onMounted, ref } from 'vue'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth } from '@/firebase';
-import {  loginWithGoogle, loginWithGithub,_existUser } from "@/models/users";
+import { loginWithGoogle, loginWithGithub, _existUser, checkPassword, checkCompanyUser } from "@/models/users";
 import { useRouter } from 'vue-router' // import router
+import bcrypt from 'bcryptjs';
+
 const email = ref('')
 const password = ref('')
 const errMsg = ref() // ERROR MESSAGE
 const router = useRouter() // get a reference to our vue router
-const signIn = () => { // we also renamed this method
+const uid = router.currentRoute.value.params; // Access the route parameter
+var companyId = uid.id;
+const signIn = async () => { // we also renamed this method
     console.log(email.value, password.value);
-    signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
-        .then(async() => {
-            if(await _existUser(email.value,'company_users')){
-                signOut(auth);
-                console.log(111111111111);
-                errMsg.value = "This is company account, you can not access with this user."
-            }else{
+    const existsUserThisCompany = await checkCompanyUser(email.value, companyId);
+    if (!existsUserThisCompany) {
+        return errMsg.value = 'Email is not exists.'
+    }
+    else if (await _existUser(email.value, 'company_users')) {
+        return errMsg.value = "This is company account, you can not access with this user.";
+    }
+    else if (!await checkPassword(email.value, password.value, companyId)) {
+        return errMsg.value = `password was incorrect`;
+    } else {
+        signInWithEmailAndPassword(auth, email.value, `123123`) // THIS LINE CHANGED
+            .then(async () => {
+                localStorage.setItem('baseUrl', companyId)
                 console.log('Successfully logged in!');
-                router.push('/survey') // redirect to the feed
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            switch (error.code) {
-                case 'auth/invalid-email':
-                    errMsg.value = 'Invalid email'
-                    break
-                case 'auth/user-not-found':
-                    errMsg.value = 'No account with that email was found'
-                    break
-                case 'auth/wrong-password':
-                    errMsg.value = 'Incorrect password'
-                    break
-                default:
-                    errMsg.value = 'Email or password was incorrect'
-                    break
-            }
-        });
+                router.push('survey') // redirect to the feed
+            })
+            .catch(async (error) => {
+                await signOut(auth);
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errMsg.value = 'Invalid email'
+                        break
+                    case 'auth/user-not-found':
+                        errMsg.value = 'No account with that email was found'
+                        break
+                    case 'auth/wrong-password':
+                        errMsg.value = 'Incorrect password'
+                        break
+                    default:
+                        errMsg.value = 'Email or password was incorrect'
+                        break
+                }
+            });
+    }
+
 }
 const register = () => {
-    router.push('/register')
+    router.push(`/${companyId}/register`)
 }
 const _loginWithGithub = async () => {
-    const result = await loginWithGithub();
+    const result = await loginWithGithub(companyId);
     errMsg.value = result;
-    if(result === true){
+    if (result === true) {
         router.push('survey');
     }
 }
 const _loginWithGoogle = async () => {
-    const result = await loginWithGoogle();
+    const result = await loginWithGoogle(companyId);
     errMsg.value = result;
-    if(result === true){
+    if (result === true) {
         router.push('survey');
     }
 }

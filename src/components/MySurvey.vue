@@ -8,7 +8,7 @@
                 <v-col cols="8" sm="8" md="8">
                     <v-btn class="ma-2" :loading="loading" :disabled="loading" color="secondary"
                         @click="runSurvey(survey.id)">
-                        Run
+                        Preview
                     </v-btn>
                     <v-btn  :loading="loading3" :disabled="loading3" color="blue-grey"
                         class="ma-2 white--text" @click="editSurvey(survey.id)">
